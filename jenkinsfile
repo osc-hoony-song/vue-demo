@@ -48,6 +48,7 @@ pipeline {
                 }
                 sh "sudo rm -rf ${DEPLOY_DIR}/*"
                 sh "sudo rm -rf ${DEPLOY_HTML}/*"
+                sh "sudo "mkdir -p v8/demo/vue"
                 sh "sudo cp -r dist/. ${DEPLOY_DIR}/"
                 sh "sudo cp -r dist/. ${DEPLOY_HTML}/"
             }
