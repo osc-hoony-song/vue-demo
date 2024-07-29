@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    options {
+        skipDefaultCheckout()  // 자동 체크아웃 방지
+    }
+    tools {
+        nodejs 'NodeJS-16'
+    }
+
+    environment {
+        DEPLOY_DIR = '/var/www/html' 
+        NVM_DIR = "${env.HOME}/.nvm"
+        REPO_URL = 'https://github.com/osc-hoony-song/vue-demo.git'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    def branchName = env.BRANCH_NAME
+                    echo "Building branch: ${branchName}"
+                    checkout([$class: 'GitSCM', branches: [[name: "refs/heads/${branchName}"]],
+                              userRemoteConfigs: [[url: env.REPO_URL]],
+                              doGenerateSubmoduleConfigurations: false, submoduleCfg: [],
+                              extensions: [[$class: 'CloneOption', depth: 1, shallow: true]]])
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                 sh '''
+                npm install --save-dev @vue/cli-service
+                npm install
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    def buildFiles = sh(script: "ls dist", returnStdout: true).trim()
+                    echo "Built files: ${buildFiles}"
+                }
+                sh "sudo rm -rf ${DEPLOY_DIR}/*"
+                sh "sudo cp -r dist/. ${DEPLOY_DIR}/"
+            }
+        }
+    }
+}
