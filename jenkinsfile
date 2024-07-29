@@ -8,7 +8,8 @@ pipeline {
     }
 
     environment {
-        DEPLOY_DIR = '/var/www/html' 
+        DEPLOY_DIR = '/var/www/html/v8/demo/vue' 
+        DEPLOY_HTML = '/var/www/html'
         NVM_DIR = "${env.HOME}/.nvm"
         REPO_URL = 'https://github.com/osc-hoony-song/vue-demo.git'
     }
@@ -46,7 +47,10 @@ pipeline {
                     echo "Built files: ${buildFiles}"
                 }
                 sh "sudo rm -rf ${DEPLOY_DIR}/*"
+                sh "sudo rm -rf ${DEPLOY_HTML}/*"
+                sh "sudo mkdir -p /var/www/html/v8/demo/vue"
                 sh "sudo cp -r dist/. ${DEPLOY_DIR}/"
+                sh "sudo cp -r dist/. ${DEPLOY_HTML}/"
             }
         }
     }
