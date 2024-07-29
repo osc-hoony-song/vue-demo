@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        DEPLOY_DIR = '/var/www/html' 
+        DEPLOY_DIR = '/var/www/html/v8/demo/vue' 
         NVM_DIR = "${env.HOME}/.nvm"
         REPO_URL = 'https://github.com/osc-hoony-song/vue-demo.git'
     }
